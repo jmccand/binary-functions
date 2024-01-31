@@ -4,10 +4,7 @@ class TwosComplement:
 
     def __init__(self, expression):
         if isinstance(expression, str):
-            if expression[-3:] == '_10':
-                # base 10
-                self.value = float(expression[:-3])
-            else:
+            try:
                 # base 2c
                 decimal_point_loc = expression.find('.')
                 if decimal_point_loc == -1:
@@ -22,7 +19,12 @@ class TwosComplement:
                     # print(f'{expression} = {self.value}')
                 if decimal_point_loc < len(expression) - 1:
                     self.value += int(expression[decimal_point_loc + 1:], 2) * 2 ** (decimal_point_loc - len(expression) + 1)
-                
+            except ValueError:
+                if expression[-3:] == '_10':
+                    self.value = float(expression[:-3])
+                else:
+                    self.value = float(expression)
+                    
         else:
             self.value = expression
 
@@ -40,7 +42,10 @@ class TwosComplement:
 
     def toBase(self, print_base='10'):
         if print_base == '10':
-            return self.value
+            if self.value > int(self.value):
+                return self.value
+            else:
+                return int(self.value)
         
         elif print_base == '2c':
             # return 2s complement
