@@ -35,8 +35,9 @@ class TwosComplement:
 
 def main():
     calc_expression = input('')
+    print('base 10: ', end='')
     calc_expression = ''.join(calc_expression.split(' '))
-    print(calculate(calc_expression))
+    print(f'\n{calculate(calc_expression)}')
 
 def calculate(expression):
     # print(f'calculate {expression}')
@@ -55,11 +56,14 @@ def calculate(expression):
             cur_start = cur_end
         cur_end += 1
     if expression[cur_start] == '+':
+        print('+ ', end='')
         total += calculate(expression[cur_start+1:cur_end])
     elif expression[cur_start] == '-':
+        print('- ', end='')
         total += (-calculate(expression[cur_start+1:cur_end]))
     else:
         total += TwosComplement(expression)
+        print(f'({total.value}) ', end='')
     # print(f'  returning {total.value}')
     return total
             
