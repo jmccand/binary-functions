@@ -31,7 +31,7 @@ class TwosComplement:
         while -self.value >= 2 ** n:
             n += 1
         # return 2s complement and base 10
-        return '{0:b}'.format(2 ** n + self.value) + '_2c    ' + str(self.value) + '_10'
+        return '1' + '{0:b}'.format(2 ** n + self.value) + '_2c    ' + str(self.value) + '_10'
 
 def main():
     calc_expression = input('')
@@ -41,6 +41,11 @@ def main():
 
 def calculate(expression):
     # print(f'calculate {expression}')
+    if expression[0] == '(':
+        print('( ', end='')
+        res = calculate(expression[1:-1])
+        print(') ', end='')
+        return res
     cur_start = 0
     cur_end = cur_start + 1
     total = TwosComplement(0)
@@ -50,7 +55,7 @@ def calculate(expression):
             net_parenthesis += 1
         elif expression[cur_end] == ')':
             net_parenthesis -= 1
-        elif expression[cur_end] in set(('+', '-')):
+        elif expression[cur_end] in set(('+', '-')) and net_parenthesis == 0:
             # calculate
             total += calculate(expression[cur_start:cur_end])
             cur_start = cur_end
