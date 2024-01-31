@@ -17,7 +17,7 @@ class TwosComplement:
                     # positive
                     self.value = int(expression[:decimal_point_loc], 2)
                 else:
-                    n = len(expression) - 1
+                    n = decimal_point_loc - 1
                     self.value = -1 * (2 ** n - int(expression[1:decimal_point_loc], 2))
                     # print(f'{expression} = {self.value}')
                 if decimal_point_loc < len(expression) - 1:
@@ -45,7 +45,7 @@ class TwosComplement:
 
     def toBase(self, print_base='10'):
         if print_base == '10':
-            if self.value > int(self.value):
+            if abs(self.value) > int(abs(self.value)):
                 return self.value
             else:
                 return int(self.value)
@@ -59,7 +59,7 @@ class TwosComplement:
 
             # decimal
             decimal_part = ''
-            remaining = self.value - int(self.value)
+            remaining = abs(self.value) - int(abs(self.value))
             # while there's still remaining
             while remaining != 0 and len(decimal_part) < 4:
                 remaining *= 2
