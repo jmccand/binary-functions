@@ -4,6 +4,9 @@ class TwosComplement:
 
     def __init__(self, expression):
         if isinstance(expression, str):
+            if expression[-3:] == '_10':
+                self.value = float(expression[:-3])
+                return
             try:
                 # base 2c
                 decimal_point_loc = expression.find('.')
