@@ -10,7 +10,7 @@ class TwosComplement:
             else:
                 n = len(expression) - 1
                 self.value = -1 * (2 ** n - int(expression[1:], 2))
-                print(f'{expression} = {self.value}')
+                # print(f'{expression} = {self.value}')
         else:
             self.value = expression
 
@@ -25,11 +25,13 @@ class TwosComplement:
 
     def __str__(self):
         if self.value >= 0:
-            return '0' + '{0:b}'.format(self.value)
+            # return 2s complement and base 10
+            return '0' + '{0:b}'.format(self.value) + '    ' + str(self.value) + '_10'
         n = 0
         while -self.value >= 2 ** n:
             n += 1
-        return '{0:b}'.format(2 ** n + self.value)
+        # return 2s complement and base 10
+        return '{0:b}'.format(2 ** n + self.value) + '_2c    ' + str(self.value) + '_10'
 
 def main():
     calc_expression = input('')
@@ -37,7 +39,7 @@ def main():
     print(calculate(calc_expression))
 
 def calculate(expression):
-    print(f'calculate {expression}')
+    # print(f'calculate {expression}')
     cur_start = 0
     cur_end = cur_start + 1
     total = TwosComplement(0)
@@ -58,7 +60,7 @@ def calculate(expression):
         total += (-calculate(expression[cur_start+1:cur_end]))
     else:
         total += TwosComplement(expression)
-    print(f'  returning {total.value}')
+    # print(f'  returning {total.value}')
     return total
             
                 
