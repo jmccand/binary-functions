@@ -6,16 +6,23 @@ class TwosComplement:
         if isinstance(expression, str):
             if expression[-3:] == '_10':
                 # base 10
-                self.value = int(expression[:-3])
+                self.value = float(expression[:-3])
             else:
                 # base 2c
+                decimal_point_loc = expression.find('.')
+                if decimal_point_loc == -1:
+                    decimal_point_loc = len(expression)
+                # handle integer
                 if expression[0] == '0':
                     # positive
-                    self.value = int(expression, 2)
+                    self.value = int(expression[:decimal_point_loc], 2)
                 else:
                     n = len(expression) - 1
-                    self.value = -1 * (2 ** n - int(expression[1:], 2))
+                    self.value = -1 * (2 ** n - int(expression[1:decimal_point_loc], 2))
                     # print(f'{expression} = {self.value}')
+                if decimal_point_loc < len(expression) - 1:
+                    self.value += int(expression[decimal_point_loc + 1:], 2) * 2 ** (decimal_point_loc - len(expression) + 1)
+                
         else:
             self.value = expression
 
@@ -36,14 +43,29 @@ class TwosComplement:
             return self.value
         
         elif print_base == '2c':
-            if self.value >= 0:
-                # return 2s complement and base 10
-                return '0' + '{0:b}'.format(self.value)
-            n = 0
-            while -self.value >= 2 ** n:
-                n += 1
-            # return 2s complement and base 10
-            return '1' + '{0:b}'.format(2 ** n + self.value)
+            # return 2s complement
+
+            # whole part
+            whole_part = '{0:b}'.format(int(abs(self.value)))
+            whole_part = '0' + whole_part
+
+            # decimal
+            decimal_part = ''
+            remaining = self.value - int(self.value)
+            # while there's still remaining
+            while remaining != 0 and len(decimal_part) < 4:
+                remaining *= 2
+                decimal_part += str(int(remaining))
+                remaining -= int(remaining)
+
+            if self.value < 0:
+                whole_part = '{0:b}'.format(((2 ** len(whole_part) - 1) ^ int(whole_part, 2)) + 1)
+                if len(decimal_part) > 0:
+                    decimal_part = '{0:b}'.format((2 ** len(decimal_part) - 1) ^ int(decimal_part, 2))
+                    return f'{whole_part}.{decimal_part}'
+            if len(decimal_part) > 0:
+                return f'{whole_part}.{decimal_part}'
+            return f'{whole_part}'
 
 def main():
     calc_expression = input('')
