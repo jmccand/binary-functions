@@ -68,7 +68,7 @@ class TwosComplement:
                 shifted = '0{0:b}'.format(int(self.value * 2**shift))
             else:
                 n = 0
-                while 2 ** n < abs(self.value):
+                while 2 ** n <= abs(self.value):
                     n += 1
                 shifted = '1{0:b}'.format(2**(n + shift) - int(abs(self.value) * 2**shift))
             if shift != 0:
