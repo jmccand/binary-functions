@@ -9,25 +9,19 @@ class TwosComplement:
                 return
             try:
                 # base 2c
-
-                # find decimal point
                 decimal_point_loc = expression.find('.')
                 if decimal_point_loc == -1:
                     decimal_point_loc = len(expression)
-
-                decimal_length = len(expression) - decimal_point_loc - 1
-                if decimal_length < 0:
-                    decimal_length = 0
-                integer_length = decimal_point_loc - 1
-                
-                self.value = int(expression[1:].replace('.', ''), 2) * 2 ** -(decimal_length)
-                
-                if expression[0] == '1':
-                    # negative
-                    self.value = -(2 ** integer_length - self.value)
-
-                # print(f'{expression} -> {self.value}')
-
+                # handle integer
+                if expression[0] == '0':
+                    # positive
+                    self.value = int(expression[:decimal_point_loc], 2)
+                else:
+                    n = decimal_point_loc - 1
+                    self.value = -1 * (2 ** n - int(expression[1:decimal_point_loc], 2))
+                    # print(f'{expression} = {self.value}')
+                if decimal_point_loc < len(expression) - 1:
+                    self.value += int(expression[decimal_point_loc + 1:], 2) * 2 ** (decimal_point_loc - len(expression) + 1)
             except ValueError:
                 if expression[-3:] == '_10':
                     self.value = float(expression[:-3])
@@ -59,21 +53,27 @@ class TwosComplement:
         elif print_base == '2c':
             # return 2s complement
 
-            shift = 0
-            while abs(self.value) * 2**shift - int(abs(self.value) * 2**shift) != 0 and shift < 4:
-                shift += 1
+            # whole part
+            whole_part = '{0:b}'.format(int(abs(self.value)))
+            whole_part = '0' + whole_part
 
-            shifted = ''
-            if self.value >= 0:
-                shifted = '0{0:b}'.format(int(self.value * 2**shift))
-            else:
-                n = 0
-                while 2 ** n < abs(self.value):
-                    n += 1
-                shifted = '1{0:b}'.format(2**(n + shift) - int(abs(self.value) * 2**shift))
-            if shift != 0:
-                return shifted[:-shift] + '.' + shifted[-shift:]
-            return shifted
+            # decimal
+            decimal_part = ''
+            remaining = abs(self.value) - int(abs(self.value))
+            # while there's still remaining
+            while remaining != 0 and len(decimal_part) < 4:
+                remaining *= 2
+                decimal_part += str(int(remaining))
+                remaining -= int(remaining)
+
+            if self.value < 0:
+                whole_part = '{0:b}'.format(((2 ** len(whole_part) - 1) ^ int(whole_part, 2)) + 1)
+                if len(decimal_part) > 0:
+                    decimal_part = '{0:b}'.format((2 ** len(decimal_part) - 1) ^ int(decimal_part, 2))
+                    return f'{whole_part}.{decimal_part}'
+            if len(decimal_part) > 0:
+                return f'{whole_part}.{decimal_part}'
+            return f'{whole_part}'
 
 def main():
     calc_expression = input('')
